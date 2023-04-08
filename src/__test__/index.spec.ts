@@ -21,11 +21,11 @@ describe("BayesianOptimizer", () => {
     const optimizer = new BayesianOptimizer();
     await optimizer.optimize(objectiveFunction, paramRanges, numSteps);
 
-    const searchSpace = optimizer.getsearchSpace();
+    const bestParams = optimizer.getBestParams();
 
-    expect(searchSpace).not.toBeNull();
-    if (searchSpace) {
-      expect(Math.abs(searchSpace.x - 3)).toBeLessThanOrEqual(0.5);
+    expect(bestParams).not.toBeNull();
+    if (bestParams) {
+      expect(Math.abs(bestParams.x - 3)).toBeLessThanOrEqual(0.5);
     }
   });
 });

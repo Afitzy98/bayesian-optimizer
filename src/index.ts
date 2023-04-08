@@ -20,7 +20,7 @@ export type ObjectiveFunction = (params: {
 export class BayesianOptimizer {
   private gp: GaussianProcess;
   private kernel: MaternKernel;
-  private searchSpace: { [key: string]: number } | null = null;
+  private bestParams: { [key: string]: number } | null = null;
   private bestValue = -Infinity;
   private numCandidates: number;
   private explorationParameter: number;
@@ -56,7 +56,7 @@ export class BayesianOptimizer {
 
       if (value > this.bestValue) {
         this.bestValue = value;
-        this.searchSpace = nextParams;
+        this.bestParams = nextParams;
       }
 
       X.push(nextX);
@@ -67,8 +67,8 @@ export class BayesianOptimizer {
     }
   }
 
-  getsearchSpace(): { [key: string]: number } | null {
-    return this.searchSpace;
+  getBestParams(): { [key: string]: number } | null {
+    return this.bestParams;
   }
 
   private selectNextParams(
