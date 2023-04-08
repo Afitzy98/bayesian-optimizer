@@ -7,6 +7,9 @@
   <a href="https://github.com/Afitzy98/bayesian-optimizer/issues">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/Afitzy98/bayesian-optimizer">
   </a>
+  <a href="https://github.com/Afitzy98/bayesian-optimizer/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/Afitzy98/bayesian-optimizer">
+  </a>
   <a href="#badge">
     <img alt="Co-authored by GPT-4" src="https://img.shields.io/badge/Co--authored%20by-GPT--4-blue">
   </a>
