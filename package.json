@@ -1,7 +1,7 @@
 {
   "name": "bayesian-optimizer",
   "description": "Bayesian optimizer for multi-dimensional search space",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Aaron Fitzpatrick",
