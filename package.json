@@ -1,5 +1,5 @@
 {
-  "name": "bayesian-optimization",
+  "name": "bayesian-optimizer",
   "description": "Bayesian optimizer for multi-dimensional search space",
   "version": "1.0.0",
   "main": "dist/index.js",
