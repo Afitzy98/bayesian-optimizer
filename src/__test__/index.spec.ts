@@ -1,8 +1,10 @@
 import { BayesianOptimizer } from "..";
 
 describe("BayesianOptimizer", () => {
-  it("should find the minimum of a quadratic function", () => {
-    const objectiveFunction = (params: { [key: string]: number }): number => {
+  it("should find the minimum of a quadratic function", async () => {
+    const objectiveFunction = async (params: {
+      [key: string]: number;
+    }): Promise<number> => {
       const x = params.x;
       return -Math.pow(x - 3, 2);
     };
@@ -17,7 +19,7 @@ describe("BayesianOptimizer", () => {
     const numSteps = 150;
 
     const optimizer = new BayesianOptimizer();
-    optimizer.optimize(objectiveFunction, paramRanges, numSteps);
+    await optimizer.optimize(objectiveFunction, paramRanges, numSteps);
 
     const searchSpace = optimizer.getsearchSpace();
 

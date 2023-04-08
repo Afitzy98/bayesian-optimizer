@@ -13,7 +13,9 @@ export interface BayesianOptimizerOptions {
   explorationParameter?: number;
 }
 
-export type ObjectiveFunction = (params: { [key: string]: number }) => number;
+export type ObjectiveFunction = (params: {
+  [key: string]: number;
+}) => Promise<number>;
 
 export class BayesianOptimizer {
   private gp: GaussianProcess;
@@ -37,11 +39,11 @@ export class BayesianOptimizer {
     this.explorationParameter = explorationParameter;
   }
 
-  optimize(
+  async optimize(
     objectiveFunction: ObjectiveFunction,
     paramRanges: { [key: string]: ParameterRange },
     numSteps: number
-  ): void {
+  ): Promise<void> {
     const X: number[][] = [];
     const y: number[] = [];
 
@@ -49,7 +51,7 @@ export class BayesianOptimizer {
       // Acquisition function: Expected Improvement (EI)
       const nextParams = this.selectNextParams(paramRanges, X);
 
-      const value = objectiveFunction(nextParams);
+      const value = await objectiveFunction(nextParams);
       const nextX = Object.values(nextParams);
 
       if (value > this.bestValue) {
