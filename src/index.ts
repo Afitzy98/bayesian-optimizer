@@ -1,4 +1,4 @@
-import { GaussianProcess } from "./gp";
+import { GaussianProcess } from "./guassian-process";
 import { MaternKernel } from "./kernel";
 
 export interface ParameterRange {
