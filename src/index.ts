@@ -10,7 +10,7 @@ export interface BayesianOptimizerOptions {
   kernelNu?: number;
   kernelLengthScale?: number;
   numCandidates?: number;
-  explorationParameter?: number;
+  exploration?: number;
 }
 
 export type ObjectiveFunction = (params: {
@@ -23,20 +23,20 @@ export class BayesianOptimizer {
   private bestParams: { [key: string]: number } | null = null;
   private bestValue = -Infinity;
   private numCandidates: number;
-  private explorationParameter: number;
+  private exploration: number;
 
   constructor(options: BayesianOptimizerOptions = {}) {
     const {
       kernelNu = 1.5,
       kernelLengthScale = 1,
       numCandidates = 100,
-      explorationParameter = 0.01,
+      exploration = 0.01,
     } = options;
 
     this.kernel = new MaternKernel(kernelNu, kernelLengthScale);
     this.gp = new GaussianProcess(this.kernel);
     this.numCandidates = numCandidates;
-    this.explorationParameter = explorationParameter;
+    this.exploration = exploration;
   }
 
   async optimize(
@@ -46,6 +46,17 @@ export class BayesianOptimizer {
   ): Promise<void> {
     const X: number[][] = [];
     const y: number[] = [];
+
+    // Initialize bestValue and searchSpace with the first random parameters
+    const initialParams = this.generateRandomParams(paramRanges);
+    const initialValue = await objectiveFunction(initialParams);
+    const initialX = Object.values(initialParams);
+
+    this.bestValue = initialValue;
+    this.bestParams = initialParams;
+
+    X.push(initialX);
+    y.push(initialValue);
 
     for (let step = 0; step < numSteps; step++) {
       // Acquisition function: Expected Improvement (EI)
@@ -75,10 +86,11 @@ export class BayesianOptimizer {
     paramRanges: { [key: string]: ParameterRange },
     X: number[][]
   ): { [key: string]: number } {
-    let bestCandidate: { [key: string]: number } | null = null;
-    let bestEI = -Infinity;
+    const firstCandidate = this.generateRandomParams(paramRanges);
+    let bestCandidate: { [key: string]: number } = firstCandidate;
+    let bestEI = this.expectedImprovement(Object.values(firstCandidate), X);
 
-    for (let i = 0; i < this.numCandidates; i++) {
+    for (let i = 1; i < this.numCandidates; i++) {
       const candidate = this.generateRandomParams(paramRanges);
       const x = Object.values(candidate);
       const ei = this.expectedImprovement(x, X);
@@ -89,8 +101,7 @@ export class BayesianOptimizer {
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return bestCandidate!;
+    return bestCandidate;
   }
 
   private generateRandomParams(paramRanges: {
@@ -111,7 +122,7 @@ export class BayesianOptimizer {
 
     const yMean = this.gp.predict([x])[0];
     const currentBest = Math.max(...this.gp.y);
-    const improvement = yMean - currentBest - this.explorationParameter;
+    const improvement = yMean - currentBest - this.exploration;
 
     return improvement;
   }
