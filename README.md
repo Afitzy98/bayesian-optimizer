@@ -45,7 +45,7 @@ yarn add bayesian-optimizer
 import { BayesianOptimizer } from "bayesian-optimizer";
 
 // Define your objective function
-const objectiveFunction = (params) => {
+const objectiveFunction = async (params) => {
   // Your objective function logic here
   // Example: return -(params.x ** 2 + params.y ** 2);
 };
@@ -65,7 +65,7 @@ const optimizer = new BayesianOptimizer({
 });
 
 // Optimize the objective function
-optimizer.optimize(objectiveFunction, searchSpace, 100);
+await optimizer.optimize(objectiveFunction, searchSpace, 100);
 
 // Get the best parameters found
 const bestParams = optimizer.getBestParams();
@@ -111,7 +111,7 @@ The Matérn kernel has two parameters, ν (nu) and l (length scale), which can b
 
 In Bayesian optimization, the acquisition function is used to determine which points in the search space should be evaluated next. The most commonly used acquisition function is Expected Improvement (EI), which balances exploration and exploitation by calculating the expected improvement of a potential candidate point over the current best point.
 
-The EI acquisition function can be defined as follows:
+The EI acquisition function is a popular strategy in Bayesian optimization that balances exploration and exploitation by selecting the next point to evaluate based on the expected improvement over the current best point. High EI values indicate a higher potential for improvement, guiding the optimizer towards promising regions of the search space.
 
 ## Author
 

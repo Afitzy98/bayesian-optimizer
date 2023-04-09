@@ -7,10 +7,9 @@
   "author": "Aaron Fitzpatrick",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "rm -f dist/*.d.ts && tsc -p tsconfig.build.json",
     "commit": "git-cz",
     "lint": "eslint",
-    "start": "yarn build && node dist/index.js",
     "test": "jest"
   },
   "devDependencies": {
