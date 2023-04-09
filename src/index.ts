@@ -1,6 +1,8 @@
 import { GaussianProcess } from "./guassian-process";
 import { MaternKernel } from "./kernel";
 
+// TODO: add verbose logging
+
 export interface ParameterRange {
   min: number;
   max: number;
@@ -13,14 +15,14 @@ export interface BayesianOptimizerOptions {
   exploration?: number;
 }
 
-export type ObjectiveFunction = (params: {
-  [key: string]: number;
-}) => Promise<number>;
+export type ObjectiveFunction = (
+  params: Record<string, number>
+) => Promise<number>;
 
 export class BayesianOptimizer {
   private gp: GaussianProcess;
   private kernel: MaternKernel;
-  private bestParams: { [key: string]: number } | null = null;
+  private bestParams: Record<string, number> | null = null;
   private bestValue = -Infinity;
   private numCandidates: number;
   private exploration: number;
@@ -41,14 +43,14 @@ export class BayesianOptimizer {
 
   async optimize(
     objectiveFunction: ObjectiveFunction,
-    paramRanges: { [key: string]: ParameterRange },
-    numSteps: number
+    paramRanges: Record<string, ParameterRange>,
+    numSteps: number,
+    initialParams = this.generateRandomParams(paramRanges)
   ): Promise<void> {
     const X: number[][] = [];
     const y: number[] = [];
 
     // Initialize bestValue and searchSpace with the first random parameters
-    const initialParams = this.generateRandomParams(paramRanges);
     const initialValue = await objectiveFunction(initialParams);
     const initialX = Object.values(initialParams);
 
@@ -78,16 +80,16 @@ export class BayesianOptimizer {
     }
   }
 
-  getBestParams(): { [key: string]: number } | null {
+  getBestParams(): Record<string, number> | null {
     return this.bestParams;
   }
 
   private selectNextParams(
-    paramRanges: { [key: string]: ParameterRange },
+    paramRanges: Record<string, ParameterRange>,
     X: number[][]
-  ): { [key: string]: number } {
+  ): Record<string, number> {
     const firstCandidate = this.generateRandomParams(paramRanges);
-    let bestCandidate: { [key: string]: number } = firstCandidate;
+    let bestCandidate: Record<string, number> = firstCandidate;
     let bestEI = this.expectedImprovement(Object.values(firstCandidate), X);
 
     for (let i = 1; i < this.numCandidates; i++) {
@@ -104,10 +106,10 @@ export class BayesianOptimizer {
     return bestCandidate;
   }
 
-  private generateRandomParams(paramRanges: {
-    [key: string]: ParameterRange;
-  }): { [key: string]: number } {
-    const params: { [key: string]: number } = {};
+  private generateRandomParams(
+    paramRanges: Record<string, ParameterRange>
+  ): Record<string, number> {
+    const params: Record<string, number> = {};
 
     for (const paramName in paramRanges) {
       const range = paramRanges[paramName];

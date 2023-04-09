@@ -23,7 +23,8 @@ Bayesian Optimizer is a JavaScript library for optimizing black-box functions us
 - Adjustable optimization parameters (exploration, number of candidates, etc.).
 - Gaussian process regression with the Matérn kernel.
 - Expected Improvement acquisition function
-- Zero dependencies
+- 0 dependencies
+- Type definitions included
 
 ## Installation
 
